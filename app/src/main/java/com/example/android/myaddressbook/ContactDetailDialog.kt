@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.input_contact_dialog.view.*
 
@@ -41,11 +42,11 @@ class ContactDetailDialog : DialogFragment(), TextWatcher {
             // If input is valid, creates and saves the new contact,
             // or replaces it if the contact is being edited
             if (entryValid) {
-                editedContact?.email = emailEdit.text.toString()
+                editedContact?.email = emailEdit.textString
                 val contactToSave = editedContact ?: Contact(
-                        firstNameEdit.text.toString(),
-                        lastNameEdit.text.toString(),
-                        emailEdit.text.toString()
+                        firstNameEdit.textString,
+                        lastNameEdit.textString,
+                        emailEdit.textString
                 )
                 (activity as ContactsActivity).saveContact(contactToSave, arguments?.getInt(POSITION) ?: -1)
 
@@ -64,12 +65,12 @@ class ContactDetailDialog : DialogFragment(), TextWatcher {
 
         // If the contact is being edited, populates the EditText with the old
         // information
-        if (editedContact != null) {
-            firstNameEdit.setText(editedContact.firstName)
+        editedContact?.let {
+            firstNameEdit.setText(it.firstName)
             firstNameEdit.isEnabled = false
-            lastNameEdit.setText(editedContact.lastName)
+            lastNameEdit.setText(it.lastName)
             lastNameEdit.isEnabled = false
-            emailEdit.setText(editedContact.email)
+            emailEdit.setText(it.email)
         }
 
         return AlertDialog.Builder(activity!!)
@@ -86,19 +87,9 @@ class ContactDetailDialog : DialogFragment(), TextWatcher {
      * text from member variables.
      */
     override fun afterTextChanged(editable: Editable) {
-        val firstNameValid = !firstNameEdit.text.toString().isEmpty()
-        val lastNameValid = !lastNameEdit.text.toString().isEmpty()
-        val emailValid = Patterns.EMAIL_ADDRESS
-                .matcher(emailEdit.text).matches()
-
-        firstNameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                if (firstNameValid) R.drawable.ic_pass else R.drawable.ic_fail, 0)
-        lastNameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                if (lastNameValid) R.drawable.ic_pass else R.drawable.ic_fail, 0)
-        emailEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                if (emailValid) R.drawable.ic_pass else R.drawable.ic_fail, 0)
-
-        entryValid = firstNameValid && lastNameValid && emailValid
+        entryValid = firstNameEdit.validateWith { !it.isEmpty() } &&
+                lastNameEdit.validateWith { !it.isEmpty() } &&
+                emailEdit.validateWith { it.isEmailValid() }
     }
 
     /**
@@ -126,4 +117,12 @@ class ContactDetailDialog : DialogFragment(), TextWatcher {
             }
         }
     }
+}
+
+inline val TextView.textString get() = text.toString()
+
+fun String.isEmailValid() = Patterns.EMAIL_ADDRESS.matcher(this).matches()
+
+inline fun TextView.validateWith(validator: (String) -> Boolean): Boolean = validator(textString).apply {
+    setCompoundDrawablesWithIntrinsicBounds(0, 0, if (this) R.drawable.ic_pass else R.drawable.ic_fail, 0)
 }
