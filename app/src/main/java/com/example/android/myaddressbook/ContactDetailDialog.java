@@ -54,25 +54,10 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
 
         dialogView.findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                // If input is valid, creates and saves the new contact,
-                // or replaces it if the contact is being edited
                 if (entryValid) {
-                    Contact contactToSave;
-                    if (editedContact != null) {
-                        editedContact.setEmail(emailEdit.getText().toString());
-                        contactToSave = editedContact;
-                    } else {
-                        contactToSave = new Contact(
-                                firstNameEdit.getText().toString(),
-                                lastNameEdit.getText().toString(),
-                                emailEdit.getText().toString()
-                        );
-                    }
-                    ((ContactsActivity) getActivity()).saveContact(contactToSave, getArguments().getInt(POSITION));
-
+                    saveContact(editedContact);
                     dismiss();
                 } else {
-                    // Otherwise, shows an error Toast
                     Toast.makeText(getActivity(),
                             R.string.contact_not_valid,
                             Toast.LENGTH_SHORT).show();
@@ -97,6 +82,21 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
                 .setView(dialogView)
                 .setTitle(dialogTitle)
                 .create();
+    }
+
+    private void saveContact(Contact editedContact) {
+        Contact contactToSave;
+        if (editedContact != null) {
+            editedContact.setEmail(emailEdit.getText().toString());
+            contactToSave = editedContact;
+        } else {
+            contactToSave = new Contact(
+                    firstNameEdit.getText().toString(),
+                    lastNameEdit.getText().toString(),
+                    emailEdit.getText().toString()
+            );
+        }
+        ((ContactsActivity) getActivity()).saveContact(contactToSave, getArguments().getInt(POSITION));
     }
 
     /**
