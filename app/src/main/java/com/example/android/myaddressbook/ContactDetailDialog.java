@@ -65,9 +65,6 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
             }
         });
 
-        String dialogTitle = editedContact != null ? getString(R.string.edit_contact) :
-                getString(R.string.new_contact);
-
         // If the contact is being edited, populates the EditText with the old
         // information
         if (editedContact != null) {
@@ -80,7 +77,7 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
 
         return new AlertDialog.Builder(getActivity())
                 .setView(dialogView)
-                .setTitle(dialogTitle)
+                .setTitle(editedContact != null ? R.string.edit_contact : R.string.new_contact)
                 .create();
     }
 
@@ -109,17 +106,18 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
     @Override public void afterTextChanged(Editable editable) {
         boolean firstNameValid = !firstNameEdit.getText().toString().isEmpty();
         boolean lastNameValid = !lastNameEdit.getText().toString().isEmpty();
-        boolean emailValid = Patterns.EMAIL_ADDRESS
-                .matcher(emailEdit.getText()).matches();
+        boolean emailValid = Patterns.EMAIL_ADDRESS.matcher(emailEdit.getText()).matches();
 
-        firstNameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                firstNameValid ? R.drawable.ic_pass : R.drawable.ic_fail, 0);
-        lastNameEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                lastNameValid ? R.drawable.ic_pass : R.drawable.ic_fail, 0);
-        emailEdit.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                emailValid ? R.drawable.ic_pass : R.drawable.ic_fail, 0);
+        updateValidationIcon(firstNameEdit, firstNameValid);
+        updateValidationIcon(lastNameEdit, lastNameValid);
+        updateValidationIcon(emailEdit, emailValid);
 
         entryValid = firstNameValid && lastNameValid && emailValid;
+    }
+
+    private void updateValidationIcon(EditText view, boolean isValid) {
+        view.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                isValid ? R.drawable.ic_pass : R.drawable.ic_fail, 0);
     }
 
     /**
