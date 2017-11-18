@@ -18,6 +18,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactViewHolder> {
         this.contacts = contacts;
     }
 
+    public ArrayList<Contact> getContacts() {
+        return contacts;
+    }
+
     @Override public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ContactViewHolder(activity, parent);
     }
@@ -28,10 +32,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactViewHolder> {
 
     @Override public int getItemCount() {
         return contacts.size();
-    }
-
-    public ArrayList<Contact> getContacts() {
-        return contacts;
     }
 
     public void replaceContacts(List<Contact> newContacts) {
