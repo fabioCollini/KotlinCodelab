@@ -19,8 +19,7 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
     private static final String CONTACT = "contact";
     private static final String POSITION = "position";
 
-    private EditText firstNameEdit;
-    private EditText lastNameEdit;
+    private EditText nameEdit;
     private EditText emailEdit;
 
     private boolean entryValid;
@@ -41,13 +40,11 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
         View dialogView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.input_contact_dialog, null);
 
-        firstNameEdit = dialogView.findViewById(R.id.edittext_firstname);
-        lastNameEdit = dialogView.findViewById(R.id.edittext_lastname);
+        nameEdit = dialogView.findViewById(R.id.edittext_name);
         emailEdit = dialogView.findViewById(R.id.edittext_email);
 
         // Listens to text changes to validate after each key press
-        firstNameEdit.addTextChangedListener(this);
-        lastNameEdit.addTextChangedListener(this);
+        nameEdit.addTextChangedListener(this);
         emailEdit.addTextChangedListener(this);
 
         final Contact editedContact = getArguments().getParcelable(CONTACT);
@@ -68,10 +65,8 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
         // If the contact is being edited, populates the EditText with the old
         // information
         if (editedContact != null) {
-            firstNameEdit.setText(editedContact.getFirstName());
-            firstNameEdit.setEnabled(false);
-            lastNameEdit.setText(editedContact.getLastName());
-            lastNameEdit.setEnabled(false);
+            nameEdit.setText(editedContact.getName());
+            nameEdit.setEnabled(false);
             emailEdit.setText(editedContact.getEmail());
         }
 
@@ -88,8 +83,7 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
             contactToSave = editedContact;
         } else {
             contactToSave = new Contact(
-                    firstNameEdit.getText().toString(),
-                    lastNameEdit.getText().toString(),
+                    nameEdit.getText().toString(),
                     emailEdit.getText().toString()
             );
         }
@@ -104,15 +98,13 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
      *                 text from member variables.
      */
     @Override public void afterTextChanged(Editable editable) {
-        boolean firstNameValid = !firstNameEdit.getText().toString().isEmpty();
-        boolean lastNameValid = !lastNameEdit.getText().toString().isEmpty();
+        boolean nameValid = !nameEdit.getText().toString().isEmpty();
         boolean emailValid = Patterns.EMAIL_ADDRESS.matcher(emailEdit.getText()).matches();
 
-        updateValidationIcon(firstNameEdit, firstNameValid);
-        updateValidationIcon(lastNameEdit, lastNameValid);
+        updateValidationIcon(nameEdit, nameValid);
         updateValidationIcon(emailEdit, emailValid);
 
-        entryValid = firstNameValid && lastNameValid && emailValid;
+        entryValid = nameValid && emailValid;
     }
 
     private void updateValidationIcon(EditText view, boolean isValid) {

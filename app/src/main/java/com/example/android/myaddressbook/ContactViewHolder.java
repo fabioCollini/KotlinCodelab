@@ -26,8 +26,7 @@ public class ContactViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Contact contact) {
         this.contact = contact;
-        String fullName = contact.getFirstName() + " " + contact.getLastName();
-        nameLabel.setText(fullName);
+        nameLabel.setText(contact.getName());
         emailLabel.setText(contact.getEmail());
     }
 }

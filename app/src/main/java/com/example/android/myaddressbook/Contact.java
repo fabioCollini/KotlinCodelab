@@ -20,28 +20,21 @@ import android.os.Parcelable;
 
 public class Contact implements Parcelable {
 
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
 
-    public Contact(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Contact(String name, String email) {
+        this.name = name;
         this.email = email;
     }
 
     protected Contact(Parcel in) {
-        firstName = in.readString();
-        lastName = in.readString();
+        name = in.readString();
         email = in.readString();
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
@@ -53,8 +46,7 @@ public class Contact implements Parcelable {
     }
 
     @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(firstName);
-        dest.writeString(lastName);
+        dest.writeString(name);
         dest.writeString(email);
     }
 
@@ -78,24 +70,19 @@ public class Contact implements Parcelable {
 
         Contact contact = (Contact) o;
 
-        if (firstName != null ? !firstName.equals(contact.firstName) : contact.firstName != null)
-            return false;
-        if (lastName != null ? !lastName.equals(contact.lastName) : contact.lastName != null)
-            return false;
-        return email != null ? email.equals(contact.email) : contact.email == null;
+        if (!name.equals(contact.name)) return false;
+        return email.equals(contact.email);
     }
 
     @Override public int hashCode() {
-        int result = firstName != null ? firstName.hashCode() : 0;
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
+        int result = name.hashCode();
+        result = 31 * result + email.hashCode();
         return result;
     }
 
     @Override public String toString() {
         return "Contact{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }
