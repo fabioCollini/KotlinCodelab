@@ -5,7 +5,7 @@ Based on official [taking advantage of kotlin codelab](https://codelabs.develope
 Steps:
 
  * ContactsAdapter
-   * default visibility public
+   * visibility modifiers
    * properties
    * constructor
    * val Vs var
@@ -14,20 +14,21 @@ Steps:
    * default parameters
    * data classes
    * Parcelize annotation
- * ViewHolder
+ * ContactViewHolder
    * init/join declaration and assignment
+   * Contact?
    * lambdas
    * string templates
  * ContactDetailDialog
    * companion object
    * @JVMStatic
-   * apply
    * lateinit
    * ? ?: !!
- * ContactActivity
+   * apply/let
+ * ContactsActivity
    * when
    * Android extensions to avoid findViewById
- * Repository
+ * ContactsRepository
    * use
    * extension functions
    * delegates
