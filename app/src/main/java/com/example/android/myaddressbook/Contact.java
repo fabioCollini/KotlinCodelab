@@ -17,31 +17,31 @@ package com.example.android.myaddressbook;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 public class Contact implements Parcelable {
 
-    private String name;
-    private String email;
+    private @NonNull String name;
+    private @NonNull String email;
 
-    public Contact(String name, String email) {
+    public Contact(@NonNull String name, @NonNull String email) {
         this.name = name;
         this.email = email;
     }
 
     protected Contact(Parcel in) {
-        name = in.readString();
-        email = in.readString();
+        this(in.readString(), in.readString());
     }
 
-    public String getName() {
+    @NonNull public String getName() {
         return name;
     }
 
-    public String getEmail() {
+    @NonNull public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(@NonNull String email) {
         this.email = email;
     }
 
