@@ -9,13 +9,11 @@ import android.widget.TextView;
 
 public class ContactViewHolder extends RecyclerView.ViewHolder {
     private TextView nameLabel;
-    private TextView emailLabel;
     private Contact contact;
 
     public ContactViewHolder(final AppCompatActivity activity, ViewGroup parent) {
         super(LayoutInflater.from(activity).inflate(R.layout.contact_list_item, parent, false));
         nameLabel = itemView.findViewById(R.id.textview_name);
-        emailLabel = itemView.findViewById(R.id.textview_email);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -26,7 +24,7 @@ public class ContactViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Contact contact) {
         this.contact = contact;
-        nameLabel.setText(contact.getName());
-        emailLabel.setText(contact.getEmail());
+        String text = contact.getName() + "\n" + contact.getEmail();
+        nameLabel.setText(text);
     }
 }

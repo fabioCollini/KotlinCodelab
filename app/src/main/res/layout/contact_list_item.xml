@@ -43,30 +43,13 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:lines="2"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?android:attr/textColorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/textview_email"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/imageview_thumb"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Contact Name" />
-
-    <TextView
-        android:id="@+id/textview_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        tools:text="test@email.com"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/imageview_thumb"
-        app:layout_constraintTop_toBottomOf="@+id/textview_name" />
 
 </android.support.constraint.ConstraintLayout>
