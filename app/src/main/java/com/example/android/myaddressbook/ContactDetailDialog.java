@@ -6,23 +6,19 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class ContactDetailDialog extends DialogFragment implements TextWatcher {
+public class ContactDetailDialog extends DialogFragment {
 
     private static final String CONTACT = "contact";
     private static final String POSITION = "position";
 
     private EditText nameEdit;
     private EditText emailEdit;
-
-    private boolean entryValid;
 
     public static void show(AppCompatActivity activity, Contact contact, int position) {
         ContactDetailDialog fragment = new ContactDetailDialog();
@@ -43,15 +39,11 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
         nameEdit = dialogView.findViewById(R.id.edittext_name);
         emailEdit = dialogView.findViewById(R.id.edittext_email);
 
-        // Listens to text changes to validate after each key press
-        nameEdit.addTextChangedListener(this);
-        emailEdit.addTextChangedListener(this);
-
         final Contact editedContact = getArguments().getParcelable(CONTACT);
 
         dialogView.findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                if (entryValid) {
+                if (validateFields()) {
                     saveContact(editedContact);
                     dismiss();
                 } else {
@@ -90,35 +82,18 @@ public class ContactDetailDialog extends DialogFragment implements TextWatcher {
         ((ContactsActivity) getActivity()).saveContact(contactToSave, getArguments().getInt(POSITION));
     }
 
-    /**
-     * Validates the user input when adding a new contact each time the test
-     * is changed.
-     *
-     * @param editable The text that was changed. It is not used as you get the
-     *                 text from member variables.
-     */
-    @Override public void afterTextChanged(Editable editable) {
+    private boolean validateFields() {
         boolean nameValid = !nameEdit.getText().toString().isEmpty();
         boolean emailValid = Patterns.EMAIL_ADDRESS.matcher(emailEdit.getText()).matches();
 
         updateValidationIcon(nameEdit, nameValid);
         updateValidationIcon(emailEdit, emailValid);
 
-        entryValid = nameValid && emailValid;
+        return nameValid && emailValid;
     }
 
     private void updateValidationIcon(EditText view, boolean isValid) {
         view.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                 isValid ? R.drawable.ic_pass : R.drawable.ic_fail, 0);
-    }
-
-    /**
-     * Override methods for the TextWatcher interface, used to validate user
-     * input.
-     */
-    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-    }
-
-    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
     }
 }
