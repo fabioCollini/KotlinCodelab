@@ -5,124 +5,89 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Patterns
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
-import kotlinx.android.synthetic.main.input_contact_dialog.view.*
+import org.jetbrains.anko.longToast
 
-class ContactDetailDialog : DialogFragment(), TextWatcher {
+class ContactDetailDialog : DialogFragment() {
 
-    private lateinit var firstNameEdit: EditText
-    private lateinit var lastNameEdit: EditText
+    private lateinit var nameEdit: EditText
     private lateinit var emailEdit: EditText
-
-    private var entryValid: Boolean = false
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Inflates the dialog view
         val dialogView = LayoutInflater.from(activity)
                 .inflate(R.layout.input_contact_dialog, null)
 
-        firstNameEdit = dialogView.edittext_firstname
-        lastNameEdit = dialogView.edittext_lastname
-        emailEdit = dialogView.edittext_email
-
-        // Listens to text changes to validate after each key press
-        firstNameEdit.addTextChangedListener(this)
-        lastNameEdit.addTextChangedListener(this)
-        emailEdit.addTextChangedListener(this)
+        nameEdit = dialogView.findViewById(R.id.edittext_name)
+        emailEdit = dialogView.findViewById(R.id.edittext_email)
 
         val editedContact = arguments?.getParcelable<Contact>(CONTACT)
 
-        dialogView.save.setOnClickListener {
-            // If input is valid, creates and saves the new contact,
-            // or replaces it if the contact is being edited
-            if (entryValid) {
-                editedContact?.email = emailEdit.textString
-                val contactToSave = editedContact ?: Contact(
-                        firstNameEdit.textString,
-                        lastNameEdit.textString,
-                        emailEdit.textString
-                )
-                (activity as ContactsActivity).saveContact(contactToSave, arguments?.getInt(POSITION) ?: -1)
-
+        dialogView.findViewById<View>(R.id.save).setOnClickListener {
+            if (validateFields()) {
+                saveContact(editedContact)
                 dismiss()
             } else {
-                Toast.makeText(activity,
-                        R.string.contact_not_valid,
-                        Toast.LENGTH_SHORT).show()
+                activity?.longToast(R.string.contact_not_valid)
             }
         }
-
-        val dialogTitle = if (editedContact != null)
-            getString(R.string.edit_contact)
-        else
-            getString(R.string.new_contact)
 
         // If the contact is being edited, populates the EditText with the old
         // information
         editedContact?.let {
-            firstNameEdit.setText(it.firstName)
-            firstNameEdit.isEnabled = false
-            lastNameEdit.setText(it.lastName)
-            lastNameEdit.isEnabled = false
+            nameEdit.setText(it.name)
+            nameEdit.isEnabled = false
             emailEdit.setText(it.email)
         }
 
         return AlertDialog.Builder(activity!!)
                 .setView(dialogView)
-                .setTitle(dialogTitle)
+                .setTitle(if (editedContact != null) R.string.edit_contact else R.string.new_contact)
                 .create()
     }
 
-    /**
-     * Validates the user input when adding a new contact each time the test
-     * is changed.
-     *
-     * @param editable The text that was changed. It is not used as you get the
-     * text from member variables.
-     */
-    override fun afterTextChanged(editable: Editable) {
-        entryValid = firstNameEdit.validateWith { !it.isEmpty() } &&
-                lastNameEdit.validateWith { !it.isEmpty() } &&
-                emailEdit.validateWith { it.isEmailValid() }
+    private fun saveContact(editedContact: Contact?) {
+        editedContact?.email = emailEdit.text.toString()
+        val contactToSave = editedContact ?: Contact(
+                nameEdit.text.toString(),
+                emailEdit.text.toString()
+        )
+        (activity as ContactsActivity).saveContact(contactToSave, arguments?.getInt(POSITION) ?: -1)
     }
 
-    /**
-     * Override methods for the TextWatcher interface, used to validate user
-     * input.
-     */
-    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+    private fun validateFields(): Boolean {
+        val nameValid = !nameEdit.text.isEmpty()
+        val emailValid = Patterns.EMAIL_ADDRESS.matcher(emailEdit.text).matches()
 
-    override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+        nameEdit.updateValidationIcon(nameValid)
+        emailEdit.updateValidationIcon(emailValid)
+
+        return nameValid && emailValid
+    }
+
+    private fun EditText.updateValidationIcon(isValid: Boolean) {
+        setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                if (isValid) R.drawable.ic_pass else R.drawable.ic_fail, 0)
+    }
 
     companion object {
 
-        private val CONTACT = "contact"
-        private val POSITION = "position"
+        private const val CONTACT = "contact"
+        private const val POSITION = "position"
 
-        @JvmStatic fun show(activity: AppCompatActivity, contact: Contact?, position: Int) {
-            ContactDetailDialog().let {
-                it.arguments = Bundle().apply {
-                    if (contact != null) {
-                        putParcelable(CONTACT, contact)
+        @JvmStatic fun show(activity: AppCompatActivity, contact: Contact? = null, position: Int = -1) {
+            ContactDetailDialog().let { fragment ->
+                fragment.arguments = Bundle().apply {
+                    contact?.let {
+                        putParcelable(CONTACT, it)
                     }
                     putInt(POSITION, position)
                 }
-                it.show(activity.supportFragmentManager, "detail")
+                fragment.show(activity.supportFragmentManager, "detail")
             }
         }
     }
-}
-
-inline val TextView.textString get() = text.toString()
-
-fun String.isEmailValid() = Patterns.EMAIL_ADDRESS.matcher(this).matches()
-
-inline fun TextView.validateWith(validator: (String) -> Boolean): Boolean = validator(textString).apply {
-    setCompoundDrawablesWithIntrinsicBounds(0, 0, if (this) R.drawable.ic_pass else R.drawable.ic_fail, 0)
 }

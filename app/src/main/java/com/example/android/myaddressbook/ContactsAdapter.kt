@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import java.util.*
 
-class ContactsAdapter(private val activity: AppCompatActivity, val contacts: ArrayList<Contact>) : RecyclerView.Adapter<ContactViewHolder>() {
+class ContactsAdapter(
+        private val activity: AppCompatActivity,
+        val contacts: ArrayList<Contact>
+) : RecyclerView.Adapter<ContactViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ContactViewHolder(activity, parent)
 
@@ -17,13 +20,13 @@ class ContactsAdapter(private val activity: AppCompatActivity, val contacts: Arr
 
     fun replaceContacts(newContacts: List<Contact>) {
         contacts.clear()
-        contacts.addAll(newContacts)
+        contacts += newContacts
         notifyDataSetChanged()
     }
 
     fun saveContact(editedContact: Contact, contactPosition: Int) {
         if (contactPosition == -1) {
-            contacts.add(editedContact)
+            contacts += editedContact
             notifyItemInserted(contacts.size)
         } else {
             contacts[contactPosition] = editedContact

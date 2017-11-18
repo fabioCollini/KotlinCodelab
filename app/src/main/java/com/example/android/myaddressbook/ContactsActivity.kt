@@ -41,7 +41,7 @@ class ContactsActivity : AppCompatActivity() {
         contact_list.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         contact_list.adapter = adapter
 
-        fab.setOnClickListener { ContactDetailDialog.show(this, null, -1) }
+        fab.setOnClickListener { ContactDetailDialog.show(this) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -49,20 +49,18 @@ class ContactsActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_clear -> {
-                adapter.replaceContacts(emptyList())
-                repository.saveContacts(adapter.contacts)
-                true
-            }
-            R.id.action_generate -> {
-                adapter.replaceContacts(repository.generateContacts())
-                repository.saveContacts(adapter.contacts)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_clear -> {
+            adapter.replaceContacts(emptyList())
+            repository.saveContacts(adapter.contacts)
+            true
         }
+        R.id.action_generate -> {
+            adapter.replaceContacts(repository.generateContacts())
+            repository.saveContacts(adapter.contacts)
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     fun saveContact(editedContact: Contact, contactPosition: Int) {

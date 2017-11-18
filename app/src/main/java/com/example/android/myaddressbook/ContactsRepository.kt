@@ -16,13 +16,12 @@ class ContactsRepository(private val assets: AssetManager, prefs: SharedPreferen
         this.contacts = contacts
     }
 
-    fun generateContacts(): List<Contact> {
-        val contactsString = readContactJsonFile()
-        return Gson().fromJson(contactsString)
-    }
+    fun generateContacts(): List<Contact> = Gson().fromJson(readContactJsonFile())
 
     private fun readContactJsonFile(): String {
-        return assets.open("mock_contacts.json").bufferedReader().use { it.readText() }
+        return assets.open("mock_contacts.json").bufferedReader().use {
+            it.readText()
+        }
     }
 }
 
