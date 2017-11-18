@@ -10,8 +10,8 @@ Steps:
    * constructor
    * val Vs var
    * single line methods
+   * [] and +=
  * Contact
-   * default parameters
    * data classes
    * Parcelize annotation
  * ContactViewHolder
@@ -22,13 +22,15 @@ Steps:
  * ContactDetailDialog
    * companion object
    * @JVMStatic
+   * default parameters
    * lateinit
    * ? ?: !!
    * apply/let
+   * longToast
+   * extension methods
  * ContactsActivity
    * when
    * Android extensions to avoid findViewById
  * ContactsRepository
    * use
-   * extension functions
    * delegates
