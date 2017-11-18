@@ -22,7 +22,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactViewHolder> {
         return new ContactViewHolder(activity, parent);
     }
 
-    @Override public void onBindViewHolder(ContactViewHolder holder, final int position) {
+    @Override public void onBindViewHolder(ContactViewHolder holder, int position) {
         holder.bind(contacts.get(position));
     }
 
