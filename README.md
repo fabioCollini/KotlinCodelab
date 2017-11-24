@@ -25,9 +25,9 @@ Steps:
    * default parameters
    * lateinit
    * ? ?: !!
-   * apply/let
-   * longToast
    * extension methods
+   * longToast
+   * apply/let
  * ContactsActivity
    * when
    * Android extensions to avoid findViewById
